@@ -1,0 +1,43 @@
+{
+    "pipeline_steps": [
+        {
+            "name": "01图像裁剪",
+            "script": "cli/cutting_cli.py",
+            "params": {
+                "input": "result.tif",
+                "output-image": "data/cut_tif_folder",
+                "output-tfw": "data/cut_tfw_folder",
+                "crop-size-x": 640,
+                "crop-size-y": 640,
+                "step-size-x": 640,
+                "step-size-y": 640
+            }
+        },
+        {
+            "name": "02HSV颜色检测",
+            "script": "cli/hsv_batch_cli.py",
+            "params": {
+                "input": "data/cut_tif_folder",
+                "output": "data/color_txt_folder"
+            }
+        },
+        {
+            "name": "03TXT转SHP",
+            "script": "cli/txt_to_shp_cli.py",
+            "params": {
+                "tif-folder": "data/cut_tif_folder",
+                "tfw-folder": "data/cut_tfw_folder",
+                "txt-folder": "data/color_txt_folder",
+                "output": "data/color_shp_folder"
+            }
+        },
+        {
+            "name": "04合并SHP",
+            "script": "cli/merge_shp_cli.py",
+            "params": {
+                "input": "data/color_shp_folder",
+                "output": "data/color_merge_shp"
+            }
+        }
+    ]
+}

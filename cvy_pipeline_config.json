@@ -1,0 +1,161 @@
+{
+    "pipeline_steps": [
+        {
+            "name": "01图像裁剪",
+            "script": "cli/cutting_cli.py",
+            "params": {
+                "input": "result.tif",
+                "output-image": "data/cut_tif_folder",
+                "output-tfw": "data/cut_tfw_folder",
+                "crop-size-x": 640,
+                "crop-size-y": 640,
+                "step-size-x": 640,
+                "step-size-y": 640
+            }
+        },
+        {
+            "name": "02HSV颜色检测",
+            "script": "cli/hsv_batch_cli.py",
+            "params": {
+                "input": "data/cut_tif_folder",
+                "output": "data/color_txt_folder"
+            }
+        },
+        {
+            "name": "03TXT转SHP",
+            "script": "cli/txt_to_shp_cli.py",
+            "params": {
+                "tif-folder": "data/cut_tif_folder",
+                "tfw-folder": "data/cut_tfw_folder",
+                "txt-folder": "data/color_txt_folder",
+                "output": "data/color_shp_folder"
+            }
+        },
+        {
+            "name": "04合并SHP",
+            "script": "cli/merge_shp_cli.py",
+            "params": {
+                "input": "data/color_shp_folder",
+                "output": "data/color_merge_shp"
+            }
+        },
+        {
+            "name": "05SHP框裁剪",
+            "script": "cli/shp_kuang_cut_cli.py",
+            "params": {
+                "input": "result.tif",
+                "shapefile": "data/color_merge_shp/color_merge_shp.shp",
+                "output": "data/color_folder",
+                "scale": 1.0
+            }
+        },
+        {
+            "name": "06tif提取",
+            "script": "cli/tiqu_cli.py",
+            "params": {
+                "input": "data/color_folder",
+                "output": "data/vit_tif_folder",
+                "extension": ".tif"
+            }
+        },
+        {
+            "name": "07tfw提取",
+            "script": "cli/tiqu_cli.py",
+            "params": {
+                "input": "data/color_folder",
+                "output": "data/vit_tfw_folder",
+                "extension": ".tfw"
+            }
+        },
+        {
+            "name": "08vit_txt创建",
+            "script": "cli/create_txt_cli.py",
+            "params": {
+                "input": "data/vit_tif_folder",
+                "output": "data/vit_txt_folder"
+            }
+        },
+        {
+            "name": "09vit_推理",
+            "script": "cli/vit_predict_cli.py",
+            "params": {
+                "tif-dir": "data/vit_tif_folder",
+                "txt-dir": "data/vit_txt_folder",
+                "output": "data/vit_neg_labels"
+            }
+        },
+        {
+            "name": "10TXT转SHP",
+            "script": "cli/txt_to_shp_cli.py",
+            "params": {
+                "tif-folder": "data/vit_tif_folder",
+                "tfw-folder": "data/vit_tfw_folder",
+                "txt-folder": "data/vit_txt_folder",
+                "output": "data/vit_shp_folder"
+            }
+        },
+        {
+            "name": "11合并SHP",
+            "script": "cli/merge_shp_cli.py",
+            "params": {
+                "input": "data/vit_shp_folder",
+                "output": "data/vit_merge_shp"
+            }
+        },
+        {
+            "name": "12SHP框裁剪",
+            "script": "cli/shp_kuang_cut_cli.py",
+            "params": {
+                "input": "result.tif",
+                "shapefile": "data/vit_merge_shp/vit_merge_shp.shp",
+                "output": "data/vit_folder",
+                "scale": 1.5
+            }
+        },
+        {
+            "name": "13tif提取",
+            "script": "cli/tiqu_cli.py",
+            "params": {
+                "input": "data/vit_folder",
+                "output": "data/yolo_tif_folder",
+                "extension": ".tif"
+            }
+        },
+        {
+            "name": "14tfw提取",
+            "script": "cli/tiqu_cli.py",
+            "params": {
+                "input": "data/vit_folder",
+                "output": "data/yolo_tfw_folder",
+                "extension": ".tfw"
+            }
+        },
+        {
+            "name": "15yolo_推理",
+            "script": "cli/yolo_predict_cli.py",
+            "params": {
+                "input": "data/yolo_tif_folder",
+                "model": "config/happy.pt",
+                "output": "data/yolo_txt_folder"
+            }
+        },
+        {
+            "name": "16TXT转SHP",
+            "script": "cli/txt_to_shp_cli.py",
+            "params": {
+                "tif-folder": "data/yolo_tif_folder",
+                "tfw-folder": "data/yolo_tfw_folder",
+                "txt-folder": "data/yolo_txt_folder",
+                "output": "data/yolo_shp_folder"
+            }
+        },
+        {
+            "name": "17合并SHP",
+            "script": "cli/merge_shp_cli.py",
+            "params": {
+                "input": "data/yolo_shp_folder",
+                "output": "data/yolo_merge_shp"
+            }
+        }
+    ]
+}

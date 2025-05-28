@@ -1,0 +1,5 @@
+setup.py
+PWD_Projects.egg-info/PKG-INFO
+PWD_Projects.egg-info/SOURCES.txt
+PWD_Projects.egg-info/dependency_links.txt
+PWD_Projects.egg-info/top_level.txt
